@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return to Run Tracker</title>
+    <style>
+        /* Modern CSS Reset & Base Styles */
+        :root {
+            --slate-50: #f8fafc;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --slate-600: #475569;
+            --slate-900: #0f172a;
+            --blue-50: #eff6ff;
+            --blue-100: #dbeafe;
+            --blue-400: #60a5fa;
+            --blue-600: #2563eb;
+            --blue-800: #1e40af;
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--slate-50);
+            color: var(--slate-900);
+            margin: 0;
+            padding-bottom: 3rem;
+            line-height: 1.5;
+        }
+
+        /* Layout */
+        .max-w-4xl { max-width: 56rem; margin: 0 auto; padding: 0 1rem; }
+        header { background: var(--slate-900); color: white; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
+
+        /* Tabs */
+        .tab-container { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--slate-200); overflow-x: auto; white-space: nowrap; }
+        .tab-btn { padding: 0.5rem 1rem; font-weight: 500; border: none; background: none; cursor: pointer; transition: 0.2s; color: var(--slate-600); }
+        .tab-active { border-bottom: 2px solid var(--blue-600); color: var(--blue-600); }
+
+        /* Cards */
+        #tracker-grid { display: grid; gap: 1rem; }
+        .card { background: white; padding: 1.25rem; border-radius: 0.75rem; border: 1px solid var(--slate-200); box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: 0.2s; }
+        .card-completed { background-color: #f1f5f9; text-decoration: line-through; opacity: 0.7; }
+        
+        /* Typography & Components */
+        .day-title { font-weight: bold; font-size: 1.1rem; margin: 0; }
+        .type-label { color: var(--blue-600); font-size: 0.875rem; font-weight: 500; margin: 0.25rem 0; }
+        .workout-desc { font-size: 0.875rem; color: var(--slate-600); margin: 0; }
+        
+        .reset-btn { font-size: 0.75rem; background: rgba(127, 29, 29, 0.3); border: 1px solid #7f1d1d; color: white; padding: 0.25rem 0.75rem; rounded: 4px; cursor: pointer; border-radius: 4px; }
+        
+        textarea { width: 100%; font-size: 0.75rem; padding: 0.5rem; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 4px; margin-top: 0.75rem; box-sizing: border-box; resize: none; }
+        
+        .ref-grid { display: grid; gap: 1.5rem; margin-top: 3rem; }
+        @media (min-width: 768px) { .ref-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .ref-box { background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid var(--slate-200); }
+        .pro-tip { margin-top: 2rem; background: var(--blue-50); border: 1px solid var(--blue-100); padding: 1rem; border-radius: 0.5rem; color: var(--blue-800); font-size: 0.875rem; }
+
+        input[type="checkbox"] { width: 1.25rem; height: 1.25rem; cursor: pointer; }
+        .flex { display: flex; align-items: flex-start; gap: 1rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="max-w-4xl header-flex">
+            <div>
+                <h1 style="margin:0; font-size: 1.5rem;">Return to Run</h1>
+                <p style="margin:0; color: var(--slate-400); font-size: 0.875rem;">Foundation & Durability Plan</p>
+            </div>
+            <button onclick="resetData()" class="reset-btn">Reset Progress</button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl">
+        <div class="tab-container">
+            <button onclick="setWeek(1)" id="tab-1" class="tab-btn tab-active">Week 1</button>
+            <button onclick="setWeek(2)" id="tab-2" class="tab-btn">Week 2</button>
+            <button onclick="setWeek(3)" id="tab-3" class="tab-btn">Week 3</button>
+            <button onclick="setWeek(4)" id="tab-4" class="tab-btn">Week 4</button>
+        </div>
+
+        <div id="tracker-grid"></div>
+
+        <div class="ref-grid">
+            <div class="ref-box">
+                <h3 style="margin-top:0">💪 Stable Runner Circuit</h3>
+                <ul style="list-style:none; padding:0; font-size: 0.875rem; color: var(--slate-600);">
+                    <li>• <strong>Goblet Squat:</strong> 12 reps</li>
+                    <li>• <strong>Single-Leg Deadlift:</strong> 10/side</li>
+                    <li>• <strong>Renegade Row:</strong> 10 total</li>
+                    <li>• <strong>Weighted Step-Ups:</strong> 10/side</li>
+                    <li>• <strong>Dead Bug:</strong> 12 total</li>
+                    <li>• <strong>Farmer’s Carry:</strong> 45 seconds</li>
+                </ul>
+                <p style="font-size: 0.75rem; font-style: italic; background: #f8fafc; padding: 0.5rem; border-radius: 4px;">Rest 60s between rounds (3 rounds total).</p>
+            </div>
+
+            <div class="ref-box">
+                <h3 style="margin-top:0">🧘 Post-Run Recovery</h3>
+                <ul style="list-style:none; padding:0; font-size: 0.875rem; color: var(--slate-600);">
+                    <li>• World’s Greatest Stretch</li>
+                    <li>• Couch Stretch (Essential)</li>
+                    <li>• Pigeon Pose</li>
+                    <li>• Wall Calf Stretch</li>
+                    <li>• Downward Dog</li>
+                </ul>
+                <p style="font-size: 0.75rem; font-style: italic; background: #f8fafc; padding: 0.5rem; border-radius: 4px;">Hold each for 30–45 seconds.</p>
+            </div>
+        </div>
+
+        <div class="pro-tip">
+            <strong>💡 Pro-Tip:</strong> Use the "Talk Test." If you can't speak a full sentence during your easy runs, slow down. Focus on quiet, soft footfalls.
+        </div>
+    </main>
+
+    <script>
+        const planData = {
+            1: { foundation: "25m: 4m Run / 1m Walk", long: "35m: 3m Run / 2m Walk" },
+            2: { foundation: "25m: 5m Run / 1m Walk", long: "35m: 4m Run / 1m Walk" },
+            3: { foundation: "30m: 6m Run / 1m Walk", long: "40m: 5m Run / 1m Walk" },
+            4: { foundation: "30m: 8m Run / 1m Walk", long: "45m: 10m Run / 2m Walk" }
+        };
+
+        const days = [
+            { id: 'mon', name: 'Monday', type: 'Strength', workout: 'Stable Runner Circuit + Rower Finisher' },
+            { id: 'tue', name: 'Tuesday', type: 'Run', workout: 'Foundation Run' },
+            { id: 'wed', name: 'Wednesday', type: 'Strength', workout: 'Stable Runner Circuit + Rower Finisher' },
+            { id: 'thu', name: 'Thursday', type: 'Run', workout: 'Foundation Run' },
+            { id: 'fri', name: 'Friday', type: 'Recovery', workout: '30m Steady Row or Bike (Zone 2)' },
+            { id: 'sat', name: 'Saturday', type: 'Long Run', workout: 'Long Interval Run' },
+            { id: 'sun', name: 'Sunday', type: 'Rest', workout: 'Full Recovery & Mobility' }
+        ];
+
+        let currentWeek = 1;
+        let userProgress = JSON.parse(localStorage.getItem('runningTrackerProgress')) || {};
+
+        function setWeek(week) {
+            currentWeek = week;
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`tab-${i}`).classList.remove('tab-active');
+            }
+            document.getElementById(`tab-${week}`).classList.add('tab-active');
+            renderGrid();
+        }
+
+        function toggleComplete(week, dayId) {
+            const key = `w${week}-${dayId}`;
+            userProgress[key] = !userProgress[key];
+            save();
+            renderGrid();
+        }
+
+        function updateNote(week, dayId, note) {
+            const key = `note-w${week}-${dayId}`;
+            userProgress[key] = note;
+            save();
+        }
+
+        function save() {
+            localStorage.setItem('runningTrackerProgress', JSON.stringify(userProgress));
+        }
+
+        function resetData() {
+            if(confirm("Are you sure you want to clear all progress?")) {
+                userProgress = {};
+                save();
+                renderGrid();
+            }
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('tracker-grid');
+            grid.innerHTML = '';
+
+            days.forEach(day => {
+                const key = `w${currentWeek}-${day.id}`;
+                const noteKey = `note-w${currentWeek}-${day.id}`;
+                const isCompleted = userProgress[key] || false;
+                const noteValue = userProgress[noteKey] || '';
+                
+                let targetDesc = day.workout;
+                if (day.id === 'tue' || day.id === 'thu') targetDesc += `: ${planData[currentWeek].foundation}`;
+                if (day.id === 'sat') targetDesc += `: ${planData[currentWeek].long}`;
+
+                const card = document.createElement('div');
+                card.className = `card ${isCompleted ? 'card-completed' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="flex">
+                        <input type="checkbox" ${isCompleted ? 'checked' : ''} 
+                            onchange="toggleComplete(${currentWeek}, '${day.id}')">
+                        <div style="flex:1">
+                            <h4 class="day-title">${day.name}</h4>
+                            <p class="type-label">${day.type}</p>
+                            <p class="workout-desc">${targetDesc}</p>
+                        </div>
+                    </div>
+                    <textarea 
+                        placeholder="Add notes..." 
+                        oninput="updateNote(${currentWeek}, '${day.id}', this.value)"
+                        rows="2">${noteValue}</textarea>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.onload = renderGrid;
+    </script>
+</body>
+</html>
